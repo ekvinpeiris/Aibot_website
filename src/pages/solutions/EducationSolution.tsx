@@ -1,4 +1,3 @@
-
 import SolutionLayout from "@/components/SolutionLayout";
 import BenefitCard from "@/components/BenefitCard";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +10,7 @@ const EducationSolution = () => {
     <SolutionLayout 
       title="AI Chatbots for Online Education Platforms"
       subtitle="Answer course questions, guide enrollment, and recommend learning paths with intelligent AI chatbots."
+      heroImage="https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7"
     >
       {/* Benefits Section */}
       <section className="py-16 bg-white">

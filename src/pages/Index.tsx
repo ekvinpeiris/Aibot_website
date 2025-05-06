@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Layout from "@/components/Layout";
@@ -35,40 +34,28 @@ const Index = () => {
                 <div className="relative">
                   <div className="w-[500px] h-[500px] bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full absolute -top-20 -right-20 blur-3xl"></div>
                   <div className="relative bg-white p-6 rounded-xl shadow-xl border border-muted max-w-md">
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                        <MessagesSquare className="h-5 w-5 text-primary" />
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                        <Bot className="w-5 h-5 text-white" />
                       </div>
-                      <div>
-                        <h4 className="font-medium mb-1">24/7 Customer Support</h4>
-                        <p className="text-sm text-muted-foreground">Provide instant answers and support, even outside business hours.</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                        <Bot className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium mb-1">Advanced AI Technology</h4>
-                        <p className="text-sm text-muted-foreground">Our chatbots understand context and learn from conversations.</p>
+                      <div className="bg-accent rounded-lg p-3 text-sm">
+                        Hello! I'm your AI assistant. How can I help you today with your questions about ChatAI?
                       </div>
                     </div>
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                        <BarChart className="h-5 w-5 text-primary" />
+                    <div className="flex items-start gap-4 mb-6 flex-row-reverse">
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-sm">JD</span>
                       </div>
-                      <div>
-                        <h4 className="font-medium mb-1">Detailed Analytics</h4>
-                        <p className="text-sm text-muted-foreground">Monitor performance and optimize interactions over time.</p>
+                      <div className="bg-gray-100 rounded-lg p-3 text-sm">
+                        I'm looking for a chatbot solution that can integrate with our CRM system. Do you support that?
                       </div>
                     </div>
                     <div className="flex items-start gap-4">
-                      <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                        <LineChart className="h-5 w-5 text-primary" />
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                        <Bot className="w-5 h-5 text-white" />
                       </div>
-                      <div>
-                        <h4 className="font-medium mb-1">60% Cost Reduction</h4>
-                        <p className="text-sm text-muted-foreground">Reduce support costs while improving satisfaction.</p>
+                      <div className="bg-accent rounded-lg p-3 text-sm">
+                        Absolutely! ChatAI integrates seamlessly with all major CRM platforms including Salesforce, HubSpot, and Zoho. Our API also allows for custom integrations with proprietary systems.
                       </div>
                     </div>
                   </div>
