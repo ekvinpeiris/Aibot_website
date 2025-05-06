@@ -26,6 +26,7 @@ import HealthcareSolution from "./pages/solutions/HealthcareSolution";
 import TravelSolution from "./pages/solutions/TravelSolution";
 import EducationSolution from "./pages/solutions/EducationSolution";
 import ServiceBusinessSolution from "./pages/solutions/ServiceBusinessSolution";
+import LeadCapturePopup from "./components/LeadCapturePopup";
 
 const queryClient = new QueryClient();
 

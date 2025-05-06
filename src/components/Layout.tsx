@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import LeadCapturePopup from "./LeadCapturePopup";
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,6 +18,7 @@ const Layout = ({ children, hideFooter = false }: LayoutProps) => {
       <Navbar />
       <main className={`flex-1 ${isMobile ? 'pt-1' : ''}`}>{children}</main>
       {!hideFooter && <Footer />}
+      <LeadCapturePopup delay={30000} />
     </div>
   );
 };
