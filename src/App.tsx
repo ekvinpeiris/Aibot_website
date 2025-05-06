@@ -26,7 +26,11 @@ import HealthcareSolution from "./pages/solutions/HealthcareSolution";
 import TravelSolution from "./pages/solutions/TravelSolution";
 import EducationSolution from "./pages/solutions/EducationSolution";
 import ServiceBusinessSolution from "./pages/solutions/ServiceBusinessSolution";
-import LeadCapturePopup from "./components/LeadCapturePopup";
+
+// New pages
+import AboutUs from "./pages/AboutUs";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +49,11 @@ const App = () => (
             <Route path="/book-demo" element={<BookDemo />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/demo-landing" element={<DemoLanding />} />
+            
+            {/* New Pages */}
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
             
             {/* Solutions Routes */}
             <Route path="/solutions/ecommerce" element={<EcommerceSolution />} />

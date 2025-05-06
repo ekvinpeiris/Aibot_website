@@ -28,7 +28,7 @@ const Footer = () => {
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   <path d="M13 8h.01" />
                   <path d="M17 8h.01" />
-                  <path d="M9 8h.01" />
+                  <path d="M9 8h .01" />
                 </svg>
               </div>
               <span className="font-bold text-lg md:text-xl">ChatAI</span>
@@ -43,12 +43,8 @@ const Footer = () => {
           <div>
             <h5 className="font-medium mb-3 md:mb-4">Product</h5>
             <ul className="space-y-1 md:space-y-2">
-              <li><Link to="/features" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Features</Link></li>
               <li><Link to="/pricing" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Pricing</Link></li>
               <li><Link to="/demo-landing" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Demo</Link></li>
-              {!isMobile && (
-                <li><Link to="/integrations" className="text-muted-foreground hover:text-primary transition-colors">Integrations</Link></li>
-              )}
             </ul>
           </div>
           
@@ -57,26 +53,17 @@ const Footer = () => {
             <ul className="space-y-1 md:space-y-2">
               <li><Link to="/blog" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Blog</Link></li>
               <li><Link to="/lead-magnet" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Free Guide</Link></li>
-              {!isMobile && (
-                <>
-                  <li><Link to="/documentation" className="text-muted-foreground hover:text-primary transition-colors">Documentation</Link></li>
-                  <li><Link to="/webinars" className="text-muted-foreground hover:text-primary transition-colors">Webinars</Link></li>
-                </>
-              )}
             </ul>
           </div>
           
-          {!isMobile && (
-            <div>
-              <h5 className="font-medium mb-4">Company</h5>
-              <ul className="space-y-2">
-                <li><Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
-                <li><Link to="/careers" className="text-muted-foreground hover:text-primary transition-colors">Careers</Link></li>
-                <li><Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
-                <li><Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
-              </ul>
-            </div>
-          )}
+          <div>
+            <h5 className="font-medium mb-3 md:mb-4">Company</h5>
+            <ul className="space-y-1 md:space-y-2">
+              <li><Link to="/about" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
+              <li><Link to="/privacy" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
+            </ul>
+          </div>
         </div>
         
         <div className="mt-8 md:mt-12 pt-4 md:pt-6 border-t flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
