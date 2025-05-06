@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/dialog";
 import { Search, MoreHorizontal, Download, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Lead = {
   id: number;
@@ -29,95 +31,11 @@ type Lead = {
   company: string;
   source: string;
   status: "New" | "Contacted" | "Qualified" | "Converted" | "Lost";
-  dateAdded: string;
+  date_added: string;
 };
 
-const initialLeads: Lead[] = [
-  {
-    id: 1,
-    name: "John Smith",
-    email: "john.smith@example.com",
-    phone: "(555) 123-4567",
-    company: "ABC Corp",
-    source: "Lead Magnet",
-    status: "New",
-    dateAdded: "2025-05-01",
-  },
-  {
-    id: 2,
-    name: "Sarah Johnson",
-    email: "sarah.johnson@example.com",
-    phone: "(555) 987-6543",
-    company: "Johnson & Co",
-    source: "Chatbot",
-    status: "Contacted",
-    dateAdded: "2025-04-28",
-  },
-  {
-    id: 3,
-    name: "Michael Chen",
-    email: "michael.chen@example.com",
-    phone: "(555) 234-5678",
-    company: "Chen Enterprises",
-    source: "Website Form",
-    status: "Qualified",
-    dateAdded: "2025-04-25",
-  },
-  {
-    id: 4,
-    name: "Emily Rodriguez",
-    email: "emily.rodriguez@example.com",
-    phone: "(555) 345-6789",
-    company: "Rodriguez LLC",
-    source: "Lead Magnet",
-    status: "Converted",
-    dateAdded: "2025-04-20",
-  },
-  {
-    id: 5,
-    name: "David Kim",
-    email: "david.kim@example.com",
-    phone: "(555) 456-7890",
-    company: "Kim Industries",
-    source: "Referral",
-    status: "New",
-    dateAdded: "2025-05-02",
-  },
-  {
-    id: 6,
-    name: "Jessica Taylor",
-    email: "jessica.taylor@example.com",
-    phone: "(555) 567-8901",
-    company: "Taylor Group",
-    source: "Chatbot",
-    status: "Lost",
-    dateAdded: "2025-04-15",
-  },
-  {
-    id: 7,
-    name: "Robert Wilson",
-    email: "robert.wilson@example.com",
-    phone: "(555) 678-9012",
-    company: "Wilson Co",
-    source: "Website Form",
-    status: "New",
-    dateAdded: "2025-05-03",
-  },
-  {
-    id: 8,
-    name: "Amanda Martinez",
-    email: "amanda.martinez@example.com",
-    phone: "(555) 789-0123",
-    company: "Martinez Inc",
-    source: "Lead Magnet",
-    status: "Contacted",
-    dateAdded: "2025-04-30",
-  },
-];
-
 const LeadManagement = () => {
-  const [leads, setLeads] = useState<Lead[]>(initialLeads);
-  const [filteredLeads, setFilteredLeads] = useState<Lead[]>(initialLeads);
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = useState<string | null>(null);
@@ -126,74 +44,131 @@ const LeadManagement = () => {
   const [sortField, setSortField] = useState<keyof Lead | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  // Handle searching and filtering
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
-    filterLeads(query, statusFilter, sourceFilter);
-  };
+  // Fetch leads from Supabase
+  const { data: leads = [], isLoading } = useQuery({
+    queryKey: ['leads'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('date_added', { ascending: false });
+      
+      if (error) throw error;
+      return data as Lead[];
+    }
+  });
 
-  const handleStatusFilter = (value: string) => {
-    const status = value === "All" ? null : value;
-    setStatusFilter(status);
-    filterLeads(searchQuery, status, sourceFilter);
-  };
+  // Update lead status mutation
+  const updateLeadStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: number, status: Lead["status"] }) => {
+      const { error } = await supabase
+        .from('leads')
+        .update({ status })
+        .eq('id', id);
+      
+      if (error) throw error;
+      return { id, status };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+      toast.success("Lead status updated successfully");
+    },
+    onError: (error) => {
+      console.error("Error updating lead:", error);
+      toast.error("Failed to update lead status");
+    }
+  });
 
-  const handleSourceFilter = (value: string) => {
-    const source = value === "All" ? null : value;
-    setSourceFilter(source);
-    filterLeads(searchQuery, statusFilter, source);
-  };
+  // Apply filters to leads
+  const filteredLeads = leads.filter(lead => {
+    let matchesSearch = true;
+    let matchesStatus = true;
+    let matchesSource = true;
 
-  const filterLeads = (query: string, status: string | null, source: string | null) => {
-    let result = leads;
-
-    if (query) {
-      result = result.filter(lead => 
-        lead.name.toLowerCase().includes(query) ||
-        lead.email.toLowerCase().includes(query) ||
-        lead.company.toLowerCase().includes(query)
-      );
+    if (searchQuery) {
+      matchesSearch = 
+        lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lead.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lead.company.toLowerCase().includes(searchQuery.toLowerCase());
     }
 
-    if (status) {
-      result = result.filter(lead => lead.status === status);
+    if (statusFilter) {
+      matchesStatus = lead.status === statusFilter;
     }
 
-    if (source) {
-      result = result.filter(lead => lead.source === source);
+    if (sourceFilter) {
+      matchesSource = lead.source === sourceFilter;
     }
 
-    setFilteredLeads(result);
-  };
+    return matchesSearch && matchesStatus && matchesSource;
+  });
+
+  // Sort leads
+  const sortedLeads = sortField 
+    ? [...filteredLeads].sort((a, b) => {
+        if (a[sortField] < b[sortField]) return sortDirection === "asc" ? -1 : 1;
+        if (a[sortField] > b[sortField]) return sortDirection === "asc" ? 1 : -1;
+        return 0;
+      })
+    : filteredLeads;
 
   // Handle sorting
   const handleSort = (field: keyof Lead) => {
     const direction = sortField === field && sortDirection === "asc" ? "desc" : "asc";
     setSortField(field);
     setSortDirection(direction);
-
-    const sorted = [...filteredLeads].sort((a, b) => {
-      if (a[field] < b[field]) return direction === "asc" ? -1 : 1;
-      if (a[field] > b[field]) return direction === "asc" ? 1 : -1;
-      return 0;
-    });
-
-    setFilteredLeads(sorted);
   };
 
-  // Handle lead status change
+  // Handle search and filters
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value.toLowerCase());
+  };
+
+  const handleStatusFilter = (value: string) => {
+    const status = value === "All" ? null : value;
+    setStatusFilter(status);
+  };
+
+  const handleSourceFilter = (value: string) => {
+    const source = value === "All" ? null : value;
+    setSourceFilter(source);
+  };
+
+  // Update lead status
   const updateLeadStatus = (id: number, newStatus: Lead["status"]) => {
-    const updatedLeads = leads.map(lead =>
-      lead.id === id ? { ...lead, status: newStatus } : lead
-    );
-    
-    setLeads(updatedLeads);
-    filterLeads(searchQuery, statusFilter, sourceFilter);
-    toast.success(`Lead status updated to ${newStatus}`);
+    updateLeadStatusMutation.mutate({ id, status: newStatus });
   };
 
   const handleExportCSV = () => {
+    // Generate CSV data from sortedLeads
+    const headers = ["Name", "Email", "Phone", "Company", "Source", "Status", "Date Added"];
+    const csvData = sortedLeads.map(lead => [
+      lead.name,
+      lead.email,
+      lead.phone,
+      lead.company,
+      lead.source,
+      lead.status,
+      new Date(lead.date_added).toLocaleDateString()
+    ]);
+    
+    // Create CSV content
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.join(','))
+    ].join('\n');
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `leads-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
     toast.success("Leads exported to CSV");
   };
 
@@ -291,7 +266,7 @@ const LeadManagement = () => {
                     <ArrowUpDown size={16} className="ml-1" />
                   </div>
                 </TableHead>
-                <TableHead className="cursor-pointer" onClick={() => handleSort("dateAdded")}>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("date_added")}>
                   <div className="flex items-center">
                     Date Added
                     <ArrowUpDown size={16} className="ml-1" />
@@ -301,8 +276,16 @@ const LeadManagement = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredLeads.length > 0 ? (
-                filteredLeads.map((lead) => (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-10">
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : sortedLeads.length > 0 ? (
+                sortedLeads.map((lead) => (
                   <TableRow key={lead.id} className="cursor-pointer hover:bg-muted/50">
                     <TableCell className="font-medium" onClick={() => openLeadDetails(lead)}>{lead.name}</TableCell>
                     <TableCell onClick={() => openLeadDetails(lead)}>{lead.email}</TableCell>
@@ -313,7 +296,7 @@ const LeadManagement = () => {
                         {lead.status}
                       </Badge>
                     </TableCell>
-                    <TableCell onClick={() => openLeadDetails(lead)}>{new Date(lead.dateAdded).toLocaleDateString()}</TableCell>
+                    <TableCell onClick={() => openLeadDetails(lead)}>{new Date(lead.date_added).toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
                       <Select
                         onValueChange={(value) => updateLeadStatus(lead.id, value as Lead["status"])}
@@ -344,7 +327,6 @@ const LeadManagement = () => {
                         setSearchQuery("");
                         setStatusFilter(null);
                         setSourceFilter(null);
-                        setFilteredLeads(leads);
                       }}
                     >
                       Reset Filters
@@ -393,7 +375,7 @@ const LeadManagement = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium">Date Added</p>
-                <p className="text-sm">{new Date(selectedLead.dateAdded).toLocaleDateString()}</p>
+                <p className="text-sm">{new Date(selectedLead.date_added).toLocaleDateString()}</p>
               </div>
             </div>
           )}

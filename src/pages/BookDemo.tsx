@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +17,7 @@ import { toast } from "sonner";
 import Layout from "@/components/Layout";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Calendar, Phone, Building, User, Mail } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   fullName: z
@@ -54,13 +54,27 @@ const BookDemo = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Save lead data to Supabase
+      const { error } = await supabase
+        .from('leads')
+        .insert([
+          { 
+            name: data.fullName,
+            email: data.email,
+            phone: data.phone,
+            company: data.company || '',
+            source: 'Lead Magnet',
+            status: 'New',
+            date_added: new Date().toISOString().split('T')[0]
+          }
+        ]);
+      
+      if (error) throw error;
       
       console.log("Demo request submitted:", data);
       setIsSuccess(true);
       toast.success("Success! Your demo has been scheduled.");
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Something went wrong. Please try again.");
       console.error("Submission error:", error);
     } finally {

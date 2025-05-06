@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Layout from "@/components/Layout";
@@ -16,14 +15,9 @@ const Index = () => {
               <h1 className="text-5xl font-bold tracking-tight mb-4">Supercharge Your Customer Service with AI Chatbots</h1>
               <p className="text-xl text-muted-foreground mb-8">Deploy intelligent AI chatbots that understand your customers and provide instant support, 24/7.</p>
               <div className="flex flex-wrap gap-4">
-                <Link to="/demo">
+                <Link to="/lead-magnet">
                   <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    Start Free Trial
-                  </Button>
-                </Link>
-                <Link to="/pricing">
-                  <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
-                    View Pricing
+                    Book a Demo
                   </Button>
                 </Link>
               </div>
@@ -180,9 +174,9 @@ const Index = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to transform your customer experience?</h2>
             <p className="text-lg mb-8 opacity-90">Join thousands of companies already using ChatAI to automate support, boost satisfaction, and drive growth.</p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/demo">
+              <Link to="/lead-magnet">
                 <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90">
-                  Start Free Trial
+                  Book a Demo
                 </Button>
               </Link>
               <Link to="/contact">
@@ -285,9 +279,9 @@ const Index = () => {
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
             <h2 className="mb-6">Ready to get started with ChatAI?</h2>
             <p className="text-xl text-muted-foreground mb-8">Join thousands of businesses already improving their customer experience.</p>
-            <Link to="/pricing">
+            <Link to="/lead-magnet">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                View Pricing Plans
+                Book a Demo
               </Button>
             </Link>
           </div>
