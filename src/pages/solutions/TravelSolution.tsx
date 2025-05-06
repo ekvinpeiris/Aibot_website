@@ -4,7 +4,7 @@ import BenefitCard from "@/components/BenefitCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Hotel, Plane, MapPin, Calendar, CheckCircle } from "lucide-react";
+import { Hotel, Plane, MapPin, Calendar, CheckCircle, MessageSquare } from "lucide-react";
 
 const TravelSolution = () => {
   return (
