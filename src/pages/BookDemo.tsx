@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -77,10 +76,10 @@ const BookDemo = () => {
         date_added: new Date().toISOString().split('T')[0]
       };
       
-      // Save lead data to Supabase using type assertion
-      const { error } = await supabase
+      // Use any to bypass type checking
+      const { error } = await (supabase as any)
         .from('leads')
-        .insert([leadData]) as unknown as { error: any };
+        .insert([leadData]);
       
       if (error) throw error;
       

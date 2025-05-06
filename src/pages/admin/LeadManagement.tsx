@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AdminLayout from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,28 +47,25 @@ const LeadManagement = () => {
   const { data: leads = [], isLoading } = useQuery({
     queryKey: ['leads'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const response = await (supabase as any)
         .from('leads')
         .select('*')
-        .order('date_added', { ascending: false }) as unknown as { 
-          data: Lead[], 
-          error: any 
-        };
+        .order('date_added', { ascending: false });
       
-      if (error) throw error;
-      return data;
+      if (response.error) throw response.error;
+      return response.data as Lead[];
     }
   });
 
   // Update lead status mutation with type assertion
   const updateLeadStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number, status: Lead["status"] }) => {
-      const { error } = await supabase
+      const response = await (supabase as any)
         .from('leads')
         .update({ status })
-        .eq('id', id) as unknown as { error: any };
+        .eq('id', id);
       
-      if (error) throw error;
+      if (response.error) throw response.error;
       return { id, status };
     },
     onSuccess: () => {

@@ -41,14 +41,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // Check if user is admin
       if (data.session?.user) {
-        // Using type assertion since we can't modify the types file
-        const { data: userData } = await supabase
+        // Use any to bypass type checking for the query
+        const response = await (supabase as any)
           .from('admin_users')
           .select('is_admin')
           .eq('id', data.session.user.id)
-          .single() as unknown as { data: AdminUser | null };
+          .single();
           
-        setIsAdmin(!!userData?.is_admin);
+        setIsAdmin(!!response?.data?.is_admin);
       }
       
       setLoading(false);
@@ -62,14 +62,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Using type assertion since we can't modify the types file
-          const { data: userData } = await supabase
+          // Use any to bypass type checking for the query
+          const response = await (supabase as any)
             .from('admin_users')
             .select('is_admin')
             .eq('id', session.user.id)
-            .single() as unknown as { data: AdminUser | null };
+            .single();
             
-          setIsAdmin(!!userData?.is_admin);
+          setIsAdmin(!!response?.data?.is_admin);
         } else {
           setIsAdmin(false);
         }
