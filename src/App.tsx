@@ -11,6 +11,7 @@ import Blog from "./pages/Blog";
 import BookDemo from "./pages/BookDemo";
 import Pricing from "./pages/Pricing";
 import LeadMagnet from "./pages/LeadMagnet";
+import DemoLanding from "./pages/DemoLanding";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import LeadManagement from "./pages/admin/LeadManagement";
 import BlogManagement from "./pages/admin/BlogManagement";
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/lead-magnet" element={<LeadMagnet />} />
             <Route path="/book-demo" element={<BookDemo />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/demo-landing" element={<DemoLanding />} />
             
             {/* Admin Auth Route */}
             <Route path="/admin/login" element={<Login />} />

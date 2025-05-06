@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Layout from "@/components/Layout";
@@ -15,7 +16,7 @@ const Index = () => {
               <h1 className="text-5xl font-bold tracking-tight mb-4">Supercharge Your Customer Service with AI Chatbots</h1>
               <p className="text-xl text-muted-foreground mb-8">Deploy intelligent AI chatbots that understand your customers and provide instant support, 24/7.</p>
               <div className="flex flex-wrap gap-4">
-                <Link to="/lead-magnet">
+                <Link to="/demo-landing">
                   <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                     Book a Demo
                   </Button>
@@ -174,7 +175,7 @@ const Index = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to transform your customer experience?</h2>
             <p className="text-lg mb-8 opacity-90">Join thousands of companies already using ChatAI to automate support, boost satisfaction, and drive growth.</p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/lead-magnet">
+              <Link to="/demo-landing">
                 <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90">
                   Book a Demo
                 </Button>
@@ -279,7 +280,7 @@ const Index = () => {
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
             <h2 className="mb-6">Ready to get started with ChatAI?</h2>
             <p className="text-xl text-muted-foreground mb-8">Join thousands of businesses already improving their customer experience.</p>
-            <Link to="/lead-magnet">
+            <Link to="/demo-landing">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                 Book a Demo
               </Button>

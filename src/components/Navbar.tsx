@@ -125,7 +125,7 @@ export const Navbar = () => {
               </Link>
             )
           ) : (
-            <Link to="/lead-magnet">
+            <Link to="/demo-landing">
               <Button className="font-medium bg-primary text-white hover:bg-primary/90">
                 Book a Demo
               </Button>
@@ -240,7 +240,7 @@ export const Navbar = () => {
                   Blog
                 </Link>
                 <div className="flex flex-col space-y-2 pt-2">
-                  <Link to="/lead-magnet" onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/demo-landing" onClick={() => setIsMenuOpen(false)}>
                     <Button className="w-full font-medium bg-primary text-white hover:bg-primary/90">
                       Book a Demo
                     </Button>
