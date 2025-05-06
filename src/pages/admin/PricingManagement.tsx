@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -53,7 +52,7 @@ const PricingManagement = () => {
   };
 
   return (
-    <AdminLayout>
+    <AdminLayout title="Pricing Plans Management">
       <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Pricing Plans Management</h1>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,6 +35,17 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// Define our own lead interface
+interface LeadData {
+  name: string;
+  email: string; 
+  phone: string;
+  company: string;
+  source: string;
+  status: string;
+  date_added: string;
+}
+
 const BookDemo = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -54,20 +66,21 @@ const BookDemo = () => {
     setIsSubmitting(true);
     
     try {
-      // Save lead data to Supabase
+      // Create lead data
+      const leadData: LeadData = {
+        name: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        company: data.company || '',
+        source: 'Lead Magnet',
+        status: 'New',
+        date_added: new Date().toISOString().split('T')[0]
+      };
+      
+      // Save lead data to Supabase using type assertion
       const { error } = await supabase
         .from('leads')
-        .insert([
-          { 
-            name: data.fullName,
-            email: data.email,
-            phone: data.phone,
-            company: data.company || '',
-            source: 'Lead Magnet',
-            status: 'New',
-            date_added: new Date().toISOString().split('T')[0]
-          }
-        ]);
+        .insert([leadData]) as unknown as { error: any };
       
       if (error) throw error;
       

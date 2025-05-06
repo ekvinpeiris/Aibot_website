@@ -4,6 +4,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Session, User } from '@supabase/supabase-js';
 import { toast } from "sonner";
 
+// Define our own admin user interface
+interface AdminUser {
+  id: string;
+  is_admin: boolean;
+}
+
 type AuthContextType = {
   session: Session | null;
   user: User | null;
@@ -33,13 +39,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(data.session);
       setUser(data.session?.user ?? null);
       
-      // Check if user is admin (you'll need to customize this based on your Supabase setup)
+      // Check if user is admin
       if (data.session?.user) {
+        // Using type assertion since we can't modify the types file
         const { data: userData } = await supabase
           .from('admin_users')
           .select('is_admin')
           .eq('id', data.session.user.id)
-          .single();
+          .single() as unknown as { data: AdminUser | null };
           
         setIsAdmin(!!userData?.is_admin);
       }
@@ -55,11 +62,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          // Using type assertion since we can't modify the types file
           const { data: userData } = await supabase
             .from('admin_users')
             .select('is_admin')
             .eq('id', session.user.id)
-            .single();
+            .single() as unknown as { data: AdminUser | null };
             
           setIsAdmin(!!userData?.is_admin);
         } else {

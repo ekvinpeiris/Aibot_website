@@ -44,27 +44,30 @@ const LeadManagement = () => {
   const [sortField, setSortField] = useState<keyof Lead | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
-  // Fetch leads from Supabase
+  // Fetch leads from Supabase with type assertion
   const { data: leads = [], isLoading } = useQuery({
     queryKey: ['leads'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('leads')
         .select('*')
-        .order('date_added', { ascending: false });
+        .order('date_added', { ascending: false }) as unknown as { 
+          data: Lead[], 
+          error: any 
+        };
       
       if (error) throw error;
-      return data as Lead[];
+      return data;
     }
   });
 
-  // Update lead status mutation
+  // Update lead status mutation with type assertion
   const updateLeadStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: number, status: Lead["status"] }) => {
       const { error } = await supabase
         .from('leads')
         .update({ status })
-        .eq('id', id);
+        .eq('id', id) as unknown as { error: any };
       
       if (error) throw error;
       return { id, status };
