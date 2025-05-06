@@ -20,6 +20,13 @@ import Settings from "./pages/admin/Settings";
 import Login from "./pages/admin/Login";
 import NotFound from "./pages/NotFound";
 
+// Solutions pages
+import EcommerceSolution from "./pages/solutions/EcommerceSolution";
+import HealthcareSolution from "./pages/solutions/HealthcareSolution"; 
+import TravelSolution from "./pages/solutions/TravelSolution";
+import EducationSolution from "./pages/solutions/EducationSolution";
+import ServiceBusinessSolution from "./pages/solutions/ServiceBusinessSolution";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -37,6 +44,13 @@ const App = () => (
             <Route path="/book-demo" element={<BookDemo />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/demo-landing" element={<DemoLanding />} />
+            
+            {/* Solutions Routes */}
+            <Route path="/solutions/ecommerce" element={<EcommerceSolution />} />
+            <Route path="/solutions/healthcare" element={<HealthcareSolution />} />
+            <Route path="/solutions/travel" element={<TravelSolution />} />
+            <Route path="/solutions/education" element={<EducationSolution />} />
+            <Route path="/solutions/service" element={<ServiceBusinessSolution />} />
             
             {/* Admin Auth Route */}
             <Route path="/admin/login" element={<Login />} />
