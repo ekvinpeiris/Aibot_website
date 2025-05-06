@@ -53,11 +53,6 @@ export const Navbar = () => {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-4">
-          <Link to="/lead-magnet">
-            <Button variant="outline" className="font-medium">
-              Free Guide
-            </Button>
-          </Link>
           <Link to="/demo">
             <Button className="font-medium bg-primary text-white hover:bg-primary/90">
               Get Started
@@ -112,11 +107,6 @@ export const Navbar = () => {
               Blog
             </Link>
             <div className="flex flex-col space-y-2 pt-2">
-              <Link to="/lead-magnet" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="outline" className="w-full font-medium">
-                  Free Guide
-                </Button>
-              </Link>
               <Link to="/demo" onClick={() => setIsMenuOpen(false)}>
                 <Button className="w-full font-medium bg-primary text-white hover:bg-primary/90">
                   Get Started

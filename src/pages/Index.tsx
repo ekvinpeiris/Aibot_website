@@ -21,9 +21,9 @@ const Index = () => {
                     Start Free Trial
                   </Button>
                 </Link>
-                <Link to="/lead-magnet">
+                <Link to="/pricing">
                   <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
-                    Download Free Guide
+                    View Pricing
                   </Button>
                 </Link>
               </div>
@@ -283,11 +283,11 @@ const Index = () => {
       <section className="section bg-accent">
         <div className="container">
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-            <h2 className="mb-6">Download Our Free AI Chatbot Guide</h2>
-            <p className="text-xl text-muted-foreground mb-8">Learn how to implement AI chatbots that drive real business results with our comprehensive guide.</p>
-            <Link to="/lead-magnet">
+            <h2 className="mb-6">Ready to get started with ChatAI?</h2>
+            <p className="text-xl text-muted-foreground mb-8">Join thousands of businesses already improving their customer experience.</p>
+            <Link to="/pricing">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                Get Your Free Copy
+                View Pricing Plans
               </Button>
             </Link>
           </div>
