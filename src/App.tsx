@@ -1,9 +1,8 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { HelmetProvider } from "react-helmet-async";
@@ -47,78 +46,76 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<Index />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:slug" element={<BlogPost />} />
-                <Route path="/lead-magnet" element={<LeadMagnet />} />
-                <Route path="/book-demo" element={<BookDemo />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/demo-landing" element={<DemoLanding />} />
-                
-                {/* New Pages */}
-                <Route path="/about" element={<AboutUs />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/privacy" element={<Privacy />} />
-                
-                {/* Solutions Routes */}
-                <Route path="/solutions/ecommerce" element={<EcommerceSolution />} />
-                <Route path="/solutions/healthcare" element={<HealthcareSolution />} />
-                <Route path="/solutions/travel" element={<TravelSolution />} />
-                <Route path="/solutions/education" element={<EducationSolution />} />
-                <Route path="/solutions/service" element={<ServiceBusinessSolution />} />
-                
-                {/* Admin Auth Route */}
-                <Route path="/admin/login" element={<Login />} />
-                
-                {/* Protected Admin Routes */}
-                <Route 
-                  path="/admin" 
-                  element={
-                    <ProtectedRoute requireAdmin={true}>
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/leads" 
-                  element={
-                    <ProtectedRoute requireAdmin={true}>
-                      <LeadManagement />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/blog" 
-                  element={
-                    <ProtectedRoute requireAdmin={true}>
-                      <BlogManagement />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/pricing" 
-                  element={
-                    <ProtectedRoute requireAdmin={true}>
-                      <PricingManagement />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/settings" 
-                  element={
-                    <ProtectedRoute requireAdmin={true}>
-                      <Settings />
-                    </ProtectedRoute>
-                  } 
-                />
-                
-                {/* Catch all not found route */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/lead-magnet" element={<LeadMagnet />} />
+              <Route path="/book-demo" element={<BookDemo />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/demo-landing" element={<DemoLanding />} />
+              
+              {/* New Pages */}
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy" element={<Privacy />} />
+              
+              {/* Solutions Routes */}
+              <Route path="/solutions/ecommerce" element={<EcommerceSolution />} />
+              <Route path="/solutions/healthcare" element={<HealthcareSolution />} />
+              <Route path="/solutions/travel" element={<TravelSolution />} />
+              <Route path="/solutions/education" element={<EducationSolution />} />
+              <Route path="/solutions/service" element={<ServiceBusinessSolution />} />
+              
+              {/* Admin Auth Route */}
+              <Route path="/admin/login" element={<Login />} />
+              
+              {/* Protected Admin Routes */}
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute requireAdmin={true}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/leads" 
+                element={
+                  <ProtectedRoute requireAdmin={true}>
+                    <LeadManagement />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/blog" 
+                element={
+                  <ProtectedRoute requireAdmin={true}>
+                    <BlogManagement />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/pricing" 
+                element={
+                  <ProtectedRoute requireAdmin={true}>
+                    <PricingManagement />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/settings" 
+                element={
+                  <ProtectedRoute requireAdmin={true}>
+                    <Settings />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Catch all not found route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </TooltipProvider>
         </AuthProvider>
       </ThemeProvider>
