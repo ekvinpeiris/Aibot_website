@@ -69,7 +69,7 @@ const App = () => (
               <Route path="/solutions/service" element={<ServiceBusinessSolution />} />
               
               {/* Admin Auth Route */}
-              <Route path="/admin/login" element={<Login />} />
+              <Route path="/admin-login" element={<Login />} />
               
               {/* Protected Admin Routes */}
               <Route 
