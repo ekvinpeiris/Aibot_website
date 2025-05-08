@@ -1,6 +1,7 @@
 
 import { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { useQuery } from '@tanstack/react-query';
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,21 +10,68 @@ import { Button } from "@/components/ui/button";
 import ShareButtons from "@/components/ShareButtons";
 import CommentSection from "@/components/CommentSection";
 import SEO from "@/components/SEO";
-import { getPostBySlug, getRelatedPosts } from "@/lib/blogData";
+import { fetchBlogPostBySlug, fetchBlogPosts } from "@/services/blogService";
+import { toast } from "sonner";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   
-  const post = getPostBySlug(slug || "");
-  const relatedPosts = post ? getRelatedPosts(post, 3) : [];
+  // Fetch the current blog post
+  const { data: post, isLoading: postLoading, error } = useQuery({
+    queryKey: ['blogPost', slug],
+    queryFn: () => fetchBlogPostBySlug(slug || ""),
+  });
+  
+  // Fetch all posts for related articles
+  const { data: allPosts, isLoading: allPostsLoading } = useQuery({
+    queryKey: ['blogPosts'],
+    queryFn: fetchBlogPosts,
+    enabled: !!post, // Only fetch when we have the current post
+  });
+  
+  // Get related posts
+  const relatedPosts = post && allPosts
+    ? allPosts
+        .filter(p => 
+          p.id !== post.id && 
+          (p.category === post.category || 
+           p.tags.some(tag => post.tags.includes(tag)))
+        )
+        .slice(0, 3)
+    : [];
   
   useEffect(() => {
-    if (!post) {
-      // Post not found, redirect to blog listing
+    if (error) {
+      toast.error("Blog post not found");
       navigate("/blog");
     }
-  }, [post, navigate]);
+  }, [error, navigate]);
+
+  if (postLoading) {
+    return (
+      <Layout>
+        <div className="container py-12">
+          <div className="max-w-3xl mx-auto">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-muted rounded w-1/4"></div>
+              <div className="h-12 bg-muted rounded w-3/4"></div>
+              <div className="flex gap-2">
+                <div className="h-6 bg-muted rounded w-20"></div>
+                <div className="h-6 bg-muted rounded w-20"></div>
+              </div>
+              <div className="h-64 bg-muted rounded w-full"></div>
+              <div className="space-y-2">
+                <div className="h-4 bg-muted rounded w-full"></div>
+                <div className="h-4 bg-muted rounded w-full"></div>
+                <div className="h-4 bg-muted rounded w-3/4"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!post) {
     return null; // This will be handled by the useEffect redirect
@@ -108,7 +156,7 @@ const BlogPost = () => {
           
           <CommentSection postId={post.id} />
           
-          {relatedPosts.length > 0 && (
+          {!allPostsLoading && relatedPosts.length > 0 && (
             <div className="mt-16">
               <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -1,18 +1,19 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Layout from "@/components/Layout";
-import blogPosts from "@/lib/blogData";
+import { fetchBlogPosts, fetchAllTags, fetchAllCategories } from "@/services/blogService";
 import { searchPosts, filterPostsByTag, initializeSearch } from "@/lib/searchUtils";
-import { getAllTags, getAllCategories } from "@/lib/blogData";
+import type { BlogPost } from '@/lib/types';
 import SearchBar from "@/components/SearchBar";
 import TagFilter from "@/components/TagFilter";
 import Pagination from "@/components/Pagination";
-import ShareButtons from "@/components/ShareButtons";
 import SEO from "@/components/SEO";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 const POSTS_PER_PAGE = 6;
 
@@ -20,19 +21,46 @@ const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [filteredPosts, setFilteredPosts] = useState(blogPosts);
-  const [paginatedPosts, setPaginatedPosts] = useState(blogPosts.slice(0, POSTS_PER_PAGE));
-  const allTags = ["All", ...getAllCategories(), ...getAllTags()];
+  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
+  const [paginatedPosts, setPaginatedPosts] = useState<BlogPost[]>([]);
+  const [allTags, setAllTags] = useState<string[]>(["All"]);
   const isMobile = useIsMobile();
-  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-
-  // Initialize search
+  
+  // Fetch blog posts
+  const { data: blogPosts, isLoading, error } = useQuery({
+    queryKey: ['blogPosts'],
+    queryFn: fetchBlogPosts,
+  });
+  
+  // Fetch tags and categories
+  const { data: tags } = useQuery({
+    queryKey: ['blogTags'],
+    queryFn: fetchAllTags,
+  });
+  
+  const { data: categories } = useQuery({
+    queryKey: ['blogCategories'],
+    queryFn: fetchAllCategories,
+  });
+  
+  // Initialize search and tags
   useEffect(() => {
-    initializeSearch(blogPosts);
-  }, []);
+    if (blogPosts) {
+      initializeSearch(blogPosts);
+      
+      // Combine all tags and categories
+      const combinedTags = ["All"];
+      if (categories) combinedTags.push(...categories);
+      if (tags) combinedTags.push(...tags);
+      
+      setAllTags([...new Set(combinedTags)]);
+    }
+  }, [blogPosts, tags, categories]);
 
   // Handle filtering and searching
   useEffect(() => {
+    if (!blogPosts) return;
+    
     let result = blogPosts;
     
     // First search
@@ -45,7 +73,7 @@ const Blog = () => {
     
     setFilteredPosts(result);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [searchQuery, selectedTag]);
+  }, [searchQuery, selectedTag, blogPosts]);
 
   // Handle pagination
   useEffect(() => {
@@ -67,6 +95,15 @@ const Blog = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+  
+  // Show error toast
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to load blog posts. Please try again later.");
+    }
+  }, [error]);
+
+  const totalPages = Math.ceil((filteredPosts?.length || 0) / POSTS_PER_PAGE);
 
   return (
     <Layout>
@@ -112,7 +149,25 @@ const Blog = () => {
           onSelectTag={handleTagSelect}
         />
         
-        {paginatedPosts.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array(6).fill(0).map((_, index) => (
+              <Card key={index} className="h-96 bg-accent/20 animate-pulse">
+                <div className="aspect-video bg-muted"></div>
+                <CardHeader className="p-4 pb-2">
+                  <div className="h-4 w-20 bg-muted rounded-md mb-2"></div>
+                  <div className="h-6 bg-muted rounded-md"></div>
+                </CardHeader>
+                <CardContent className="p-4 pt-0">
+                  <div className="space-y-2">
+                    <div className="h-4 bg-muted rounded-md"></div>
+                    <div className="h-4 bg-muted rounded-md"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : paginatedPosts.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {paginatedPosts.map((post) => (

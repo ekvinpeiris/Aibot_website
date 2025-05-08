@@ -43,8 +43,11 @@ const Footer = () => {
           <div>
             <h5 className="font-medium mb-3 md:mb-4">Product</h5>
             <ul className="space-y-1 md:space-y-2">
-              <li><Link to="/pricing" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Pricing</Link></li>
-              <li><Link to="/demo-landing" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Demo</Link></li>
+              <li><Link to="/solutions/ecommerce" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">E-commerce</Link></li>
+              <li><Link to="/solutions/healthcare" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Healthcare</Link></li>
+              <li><Link to="/solutions/travel" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Travel</Link></li>
+              <li><Link to="/solutions/education" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Education</Link></li>
+              <li><Link to="/solutions/service" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Service Business</Link></li>
             </ul>
           </div>
           
@@ -53,6 +56,8 @@ const Footer = () => {
             <ul className="space-y-1 md:space-y-2">
               <li><Link to="/blog" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Blog</Link></li>
               <li><Link to="/lead-magnet" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Free Guide</Link></li>
+              <li><Link to="/pricing" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Pricing</Link></li>
+              <li><Link to="/demo-landing" className="text-sm md:text-base text-muted-foreground hover:text-primary transition-colors">Demo</Link></li>
             </ul>
           </div>
           
