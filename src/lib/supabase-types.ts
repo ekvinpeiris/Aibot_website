@@ -17,9 +17,20 @@ export interface BlogPostInsert {
   published: boolean;
 }
 
-export interface BlogPostResponse extends Database['public']['Tables']['blog_posts']['Row'] {
+export type BlogPostResponse = {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  category: string;
   tags: string[];
-}
+  date: string;
+  author: string;
+  read_time?: string;
+  image: string;
+  published: boolean;
+};
 
 // Additional types for leads and other data
 export type LeadData = Database['public']['Tables']['leads']['Row'];

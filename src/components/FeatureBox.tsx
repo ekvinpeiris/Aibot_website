@@ -20,8 +20,8 @@ const FeatureBox = ({ icon, title, description }: FeatureBoxProps) => {
         </div>
         <h3 className={`font-semibold ${isMobile ? 'text-lg' : 'text-xl'}`}>{title}</h3>
       </CardHeader>
-      <CardContent className={`${isMobile ? 'p-4 pt-0' : 'p-6 pt-0'}`}>
-        <p className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}>{description}</p>
+      <CardContent className={`${isMobile ? 'px-4 pt-0 pb-4' : 'p-6 pt-0'}`}>
+        <p className={`text-muted-foreground ${isMobile ? 'text-sm leading-relaxed' : ''}`}>{description}</p>
       </CardContent>
     </Card>
   );
