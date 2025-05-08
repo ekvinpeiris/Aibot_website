@@ -1,109 +1,81 @@
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Layout from "@/components/Layout";
-import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
+import blogPosts from "@/lib/blogData";
+import { searchPosts, filterPostsByTag, initializeSearch } from "@/lib/searchUtils";
+import { getAllTags, getAllCategories } from "@/lib/blogData";
+import SearchBar from "@/components/SearchBar";
+import TagFilter from "@/components/TagFilter";
+import Pagination from "@/components/Pagination";
+import ShareButtons from "@/components/ShareButtons";
+import SEO from "@/components/SEO";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-// Sample blog post data
-const blogPosts = [
-  {
-    id: 1,
-    title: "7 Ways AI Chatbots Are Transforming Customer Service",
-    excerpt: "Discover how leading businesses are using AI chatbots to improve customer satisfaction and reduce support costs.",
-    category: "Customer Service",
-    date: "May 1, 2025",
-    author: "Jennifer Wong",
-    readTime: "8 min read",
-    slug: "ai-chatbots-transforming-customer-service",
-    image: "/placeholder.svg"
-  },
-  {
-    id: 2,
-    title: "The Complete Guide to Training Your AI Chatbot",
-    excerpt: "Learn how to effectively train your AI chatbot to understand customer queries and provide accurate responses.",
-    category: "AI Training",
-    date: "April 22, 2025",
-    author: "Michael Chen",
-    readTime: "12 min read",
-    slug: "guide-to-training-ai-chatbot",
-    image: "/placeholder.svg"
-  },
-  {
-    id: 3,
-    title: "Measuring Chatbot ROI: Key Metrics & Frameworks",
-    excerpt: "Understand the right metrics to track and how to calculate the true ROI of your chatbot implementation.",
-    category: "Analytics",
-    date: "April 15, 2025",
-    author: "Sarah Johnson",
-    readTime: "10 min read",
-    slug: "measuring-chatbot-roi",
-    image: "/placeholder.svg"
-  },
-  {
-    id: 4,
-    title: "How to Choose the Right Chatbot Platform for Your Business",
-    excerpt: "A comparison of the top AI chatbot platforms and how to select the one that best meets your business needs.",
-    category: "Technology",
-    date: "April 8, 2025",
-    author: "David Martinez",
-    readTime: "11 min read",
-    slug: "choose-right-chatbot-platform",
-    image: "/placeholder.svg"
-  },
-  {
-    id: 5,
-    title: "Conversational AI: Beyond Simple Chatbots",
-    excerpt: "Explore the advanced capabilities of conversational AI and how it's evolving beyond basic chatbot functionality.",
-    category: "Artificial Intelligence",
-    date: "April 1, 2025",
-    author: "Lisa Parker",
-    readTime: "9 min read",
-    slug: "conversational-ai-beyond-chatbots",
-    image: "/placeholder.svg"
-  },
-  {
-    id: 6,
-    title: "Integrating Your Chatbot with CRM Systems",
-    excerpt: "Step-by-step guide to connecting your AI chatbot with popular CRM platforms for enhanced customer insights.",
-    category: "Integration",
-    date: "March 25, 2025",
-    author: "Robert Wilson",
-    readTime: "7 min read",
-    slug: "integrating-chatbot-crm-systems",
-    image: "/placeholder.svg"
-  },
-];
-
-const categories = [
-  "All", 
-  "Customer Service", 
-  "AI Training", 
-  "Analytics", 
-  "Technology", 
-  "Artificial Intelligence", 
-  "Integration"
-];
+const POSTS_PER_PAGE = 6;
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedTag, setSelectedTag] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredPosts, setFilteredPosts] = useState(blogPosts);
+  const [paginatedPosts, setPaginatedPosts] = useState(blogPosts.slice(0, POSTS_PER_PAGE));
+  const allTags = ["All", ...getAllCategories(), ...getAllTags()];
+  const isMobile = useIsMobile();
+  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
 
-  // Filter blog posts based on search query and selected category
-  const filteredPosts = blogPosts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-                          
-    const matchesCategory = selectedCategory === "All" || post.category === selectedCategory;
+  // Initialize search
+  useEffect(() => {
+    initializeSearch(blogPosts);
+  }, []);
+
+  // Handle filtering and searching
+  useEffect(() => {
+    let result = blogPosts;
     
-    return matchesSearch && matchesCategory;
-  });
+    // First search
+    if (searchQuery) {
+      result = searchPosts(searchQuery, result);
+    }
+    
+    // Then filter by tag
+    result = filterPostsByTag(result, selectedTag);
+    
+    setFilteredPosts(result);
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [searchQuery, selectedTag]);
+
+  // Handle pagination
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+    setPaginatedPosts(filteredPosts.slice(startIndex, startIndex + POSTS_PER_PAGE));
+    
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [filteredPosts, currentPage]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleTagSelect = (tag: string) => {
+    setSelectedTag(tag);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <Layout>
+      <SEO 
+        title="ChatAI Blog - Expert Insights on AI Chatbots & Conversational AI"
+        description="Expert insights, guides, and trends about AI chatbots and conversational AI technology to help you improve customer experience and grow your business."
+        tags={["AI Chatbots", "Conversational AI", "Customer Experience", "Business Technology"]}
+      />
+      
       <div className="container py-12">
         <header className="mb-12 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">ChatAI Blog</h1>
@@ -112,82 +84,93 @@ const Blog = () => {
           </p>
         </header>
         
-        <div className="flex flex-col md:flex-row gap-8 mb-12">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-8 mb-8">
           <div className="md:w-3/4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                className="pl-10"
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+            <SearchBar 
+              onSearch={handleSearch}
+              searchQuery={searchQuery}
+            />
           </div>
           <div className="md:w-1/4">
             <select
               className="w-full h-10 rounded-md border border-input bg-background px-3 py-2"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              value={selectedTag}
+              onChange={(e) => handleTagSelect(e.target.value)}
             >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
+              {allTags.map((tag) => (
+                <option key={tag} value={tag}>
+                  {tag}
                 </option>
               ))}
             </select>
           </div>
         </div>
         
-        {filteredPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
-              <Link to={`/blog/${post.slug}`} key={post.id} className="transition-transform hover:-translate-y-1">
-                <Card className="h-full overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="aspect-video bg-muted overflow-hidden">
-                    <img 
-                      src={post.image} 
-                      alt={post.title} 
-                      className="h-full w-full object-cover" 
-                    />
-                  </div>
-                  <CardHeader className="p-4 pb-2">
-                    <div className="flex justify-between items-center mb-2">
-                      <Badge variant="secondary" className="font-normal">
-                        {post.category}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">{post.date}</span>
+        <TagFilter 
+          allTags={allTags.slice(0, 10)} // Limit displayed tags to avoid overflow
+          selectedTag={selectedTag}
+          onSelectTag={handleTagSelect}
+        />
+        
+        {paginatedPosts.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {paginatedPosts.map((post) => (
+                <Link to={`/blog/${post.slug}`} key={post.id} className="transition-transform hover:-translate-y-1">
+                  <Card className="h-full overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="aspect-video bg-muted overflow-hidden">
+                      <img 
+                        src={post.image} 
+                        alt={post.title} 
+                        className="h-full w-full object-cover" 
+                      />
                     </div>
-                    <h3 className="font-semibold text-lg">{post.title}</h3>
-                  </CardHeader>
-                  <CardContent className="p-4 pt-0">
-                    <p className="text-muted-foreground line-clamp-3">{post.excerpt}</p>
-                  </CardContent>
-                  <CardFooter className="p-4 pt-0 flex items-center justify-between">
-                    <div className="text-sm">
-                      By <span className="font-medium">{post.author}</span>
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {post.readTime}
-                    </div>
-                  </CardFooter>
-                </Card>
-              </Link>
-            ))}
-          </div>
+                    <CardHeader className="p-4 pb-2">
+                      <div className="flex justify-between items-center mb-2">
+                        <Badge variant="secondary" className="font-normal">
+                          {post.category}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">{post.date}</span>
+                      </div>
+                      <h3 className="font-semibold text-lg line-clamp-2">{post.title}</h3>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0">
+                      <p className="text-muted-foreground line-clamp-3">{post.excerpt}</p>
+                    </CardContent>
+                    <CardFooter className="p-4 pt-0 flex items-center justify-between">
+                      <div className="text-sm">
+                        By <span className="font-medium">{post.author}</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {post.readTime}
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+            
+            <Pagination 
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </>
         ) : (
           <div className="text-center py-16">
             <h3 className="text-2xl font-medium mb-2">No articles found</h3>
             <p className="text-muted-foreground mb-6">Try adjusting your search or filter to find what you're looking for.</p>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedCategory("All");
-              }}
-            >
-              Reset Filters
-            </Button>
+            <div className="flex justify-center gap-4">
+              <button
+                className="px-4 py-2 border rounded-md hover:bg-accent transition-colors"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedTag("All");
+                }}
+              >
+                Reset Filters
+              </button>
+            </div>
           </div>
         )}
         
@@ -199,10 +182,14 @@ const Blog = () => {
               <p className="text-muted-foreground">Get the latest AI chatbot insights delivered straight to your inbox.</p>
             </div>
             <div className="flex w-full md:w-auto gap-2">
-              <Input placeholder="Enter your email" className="max-w-xs" />
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <input 
+                type="email" 
+                placeholder="Enter your email" 
+                className="px-4 py-2 border rounded-md w-full md:w-auto" 
+              />
+              <button className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
                 Subscribe
-              </Button>
+              </button>
             </div>
           </div>
         </div>

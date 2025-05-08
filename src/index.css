@@ -46,13 +46,13 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222.2 47.4% 11.2%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 222.2 47.4% 11.2%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 222.2 47.4% 11.2%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 150 57% 65%;
@@ -125,7 +125,7 @@
 
 @layer components {
   .feature-card {
-    @apply p-6 rounded-xl border bg-white shadow-sm hover:shadow-md transition-all duration-300;
+    @apply p-6 rounded-xl border bg-white dark:bg-card shadow-sm hover:shadow-md transition-all duration-300;
   }
   
   .btn-primary {
@@ -143,4 +143,35 @@
   .animate-in {
     @apply animate-fade-in;
   }
+}
+
+/* Enhanced Scrollbar */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground)) transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground));
+    border-radius: 3px;
+  }
+}
+
+/* Ensure post typography styling */
+.prose {
+  @apply dark:prose-invert;
+}
+
+.prose img {
+  @apply rounded-lg;
 }

@@ -1,7 +1,10 @@
 
 import { Link } from "react-router-dom";
+import { useTheme } from "@/context/ThemeContext";
 
 const Logo = () => {
+  const { theme } = useTheme();
+  
   return (
     <Link to="/" className="flex items-center gap-2">
       <div className="bg-primary rounded-md p-1">
